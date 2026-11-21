@@ -28,7 +28,10 @@ local.properties
 .DS_Store
 Thumbs.db
 
-# Secrets
+# Secrets. The debug sideload keystore is committed on purpose.
 .env
 *.key
+*.jks
+*.keystore
+!androidApp/vinyl-scrobbler-debug.keystore
 secrets.properties

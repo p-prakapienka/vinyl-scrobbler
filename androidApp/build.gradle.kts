@@ -11,8 +11,25 @@ android {
         applicationId = "io.github.pprakapienka.vinylscrobbler"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.2"
+        // CI passes -Pvinyl.versionCode so each build can replace the previous one.
+        versionCode = (findProperty("vinyl.versionCode") as String?)?.toIntOrNull() ?: 1
+        versionName = "0.1.3"
+    }
+
+    signingConfigs {
+        getByName("debug") {
+            // Public sideload key, checked in on purpose so every APK can update the last one.
+            storeFile = file("vinyl-scrobbler-debug.keystore")
+            storePassword = "android"
+            keyAlias = "vinylscrobblerdebug"
+            keyPassword = "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
 
     compileOptions {

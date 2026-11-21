@@ -26,6 +26,7 @@ class AcoustIdMusicRecognitionService(
                             musicBrainzId = recording.id,
                         ),
                         score = result.score.coerceIn(0.0, 1.0),
+                        recordingId = recording.id,
                     )
                 }
             }

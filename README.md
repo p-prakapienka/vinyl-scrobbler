@@ -6,20 +6,19 @@ played from a vinyl record and submitting eligible listens to Last.fm.
 The initial targets are Android and Desktop/JVM, with Windows as the first
 desktop platform. Compose Multiplatform shares the UI and application logic.
 
-## Current milestone
+## Status
 
-Milestone 1 establishes:
+Milestone 1 and the build pipeline are done. Next is Milestone 2, the AcoustID
+recognition spike. Chromaprint generation and microphone capture are not built
+yet. The rest of the roadmap is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+
+Done so far:
 
 - Android and Desktop build targets.
 - AcoustID request and response mapping.
 - Provider-neutral recognition contracts.
-- The Last.fm listening eligibility policy.
-- Tests for API mapping and scrobbling thresholds.
-
-Chromaprint generation and microphone capture are intentionally deferred to the
-recognition spike. AcoustID expects a Chromaprint fingerprint and the duration
-of the complete source recording; the spike must prove that partial microphone
-captures from vinyl are reliable enough before the app is built around them.
+- The Last.fm listening eligibility policy, with tests.
+- A sideloadable debug APK and a Windows MSI from GitHub Actions.
 
 ## Build
 
@@ -31,13 +30,14 @@ gradle :composeApp:desktopTest
 gradle :androidApp:assembleDebug
 ```
 
+Pushes run [GitHub Actions](https://github.com/p-prakapienka/vinyl-scrobbler/actions). Each run uploads two artifacts and does not publish a Release:
+
+- `vinyl-scrobbler-<version>-<build>.apk` — the sideloadable Android APK, downloaded as itself rather than inside a zip
+- `windows-msi` — Windows installer
+
+The debug APK is signed with a key stored in the repo (`androidApp/vinyl-scrobbler-debug.keystore`, password `android`). Every build uses that same key, and CI raises the version number, so a new APK installs over the one already on the phone. App data stays.
+
+The APK from the first pipeline run was signed with a throwaway key. Uninstall that one once, then install the new APK. Later builds update in place.
+
 An AcoustID application API key will be required when live lookup is wired into
 the application. Do not commit API keys or Last.fm secrets.
-
-## Also planned
-
-- A personal on-device catalog of the owned records, used when AcoustID misses.
-  The collection is small, so a simple fingerprint match is enough.
-- A GitHub Actions pipeline that uploads a sideloadable Android APK and a
-  Windows MSI as workflow artifacts. No GitHub Release until there is a
-  version worth tagging.
