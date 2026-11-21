@@ -19,8 +19,13 @@
 
 ## Product constraints
 
-- Do not persist raw microphone audio.
-- Never commit AcoustID keys, Last.fm API secrets, or user session keys.
+- Do not persist raw microphone audio. Fingerprints and track metadata may be
+  stored.
+- Never commit AcoustID keys, Last.fm API secrets, user session keys, or
+  signing keystores.
 - Follow Last.fm scrobbling rules exactly and test boundary conditions.
 - Treat AcoustID viability for partial vinyl captures as an open question until
-  the milestone 2 spike supplies evidence.
+  the milestone 2 spike supplies evidence. The fallback is the on-device
+  catalog of the user's own records, not another commercial recogniser.
+- Publish a sideloadable Android APK and a Windows MSI from GitHub Actions.
+  Attach both to a GitHub Release on `v*` tags.

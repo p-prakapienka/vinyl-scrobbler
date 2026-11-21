@@ -61,7 +61,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "Vinyl Scrobbler"
-            packageVersion = "0.1.0"
+            packageVersion = "0.1.1"
         }
     }
 }

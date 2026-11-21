@@ -33,3 +33,10 @@ gradle :androidApp:assembleDebug
 
 An AcoustID application API key will be required when live lookup is wired into
 the application. Do not commit API keys or Last.fm secrets.
+
+## Also planned
+
+- A personal on-device catalog of the owned records, used when AcoustID misses.
+  The collection is small, so a simple fingerprint match is enough.
+- A GitHub Actions pipeline that uploads a sideloadable Android APK and a
+  Windows MSI, and attaches both to a GitHub Release on `v*` tags.
