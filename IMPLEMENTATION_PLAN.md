@@ -13,7 +13,10 @@ Land this as soon as the Gradle targets can package. It does not wait on
 recognition. A build has to be installable on a phone and on Windows while the
 later milestones are still open.
 
-Follow the same shape as kartka and tx-one-control:
+Follow the same shape as the CI artifacts in kartka and tx-one-control. Those
+repos do not publish a GitHub Release for ordinary builds; the download is the
+workflow artifact. androtone is the exception, and only once a version was
+worth tagging.
 
 - On every push, GitHub Actions runs the tests and uploads a downloadable
   artifact from the workflow run.
@@ -23,7 +26,8 @@ Follow the same shape as kartka and tx-one-control:
 - Desktop artifact: the Windows MSI already declared by
   `compose.desktop.nativeDistributions`. Build it on a Windows runner. Deb and
   Dmg stay available locally; they are not the first published artifact.
-- On a `v*` tag, attach the APK and the MSI to a GitHub Release.
+- No GitHub Release at this stage. A `v*` release can wait until there is a
+  version worth publishing.
 - Do not commit AcoustID keys, Last.fm secrets, or signing keys.
 
 ## Milestone 2 — AcoustID recognition spike

@@ -39,4 +39,5 @@ the application. Do not commit API keys or Last.fm secrets.
 - A personal on-device catalog of the owned records, used when AcoustID misses.
   The collection is small, so a simple fingerprint match is enough.
 - A GitHub Actions pipeline that uploads a sideloadable Android APK and a
-  Windows MSI, and attaches both to a GitHub Release on `v*` tags.
+  Windows MSI as workflow artifacts. No GitHub Release until there is a
+  version worth tagging.

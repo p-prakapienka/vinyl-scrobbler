@@ -27,5 +27,6 @@
 - Treat AcoustID viability for partial vinyl captures as an open question until
   the milestone 2 spike supplies evidence. The fallback is the on-device
   catalog of the user's own records, not another commercial recogniser.
-- Publish a sideloadable Android APK and a Windows MSI from GitHub Actions.
-  Attach both to a GitHub Release on `v*` tags.
+- Publish a sideloadable Android APK and a Windows MSI as GitHub Actions
+  artifacts. Do not create a GitHub Release until there is a version worth
+  tagging.
