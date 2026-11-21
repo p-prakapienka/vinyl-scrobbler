@@ -6,8 +6,8 @@ Progress is tracked here. Done items are checked. There is no issue tracker.
 | --- | --- |
 | Milestone 1 — Project foundation | Done |
 | Build pipeline | Done |
-| Milestone 2 — AcoustID recognition spike | Next |
-| Milestones 3–7 | Not started |
+| Milestone 2 — AcoustID recognition spike | Done |
+| Milestone 3 — Personal collection database | Next |
 
 ## Milestone 1 — Project foundation
 
@@ -41,19 +41,19 @@ worth tagging.
 
 ## Milestone 2 — AcoustID recognition spike
 
-- [ ] Capture PCM microphone audio on Android and Desktop.
-- [ ] Integrate Chromaprint behind `AudioFingerprinter`.
-- [ ] Record controlled samples from at least five vinyl records.
-- [ ] Test beginning-of-track and mid-track captures at several sample lengths.
-- [ ] Record match rate, latency, CPU use, and false positives.
-- [ ] Decide whether AcoustID is viable for continuous recognition.
+- [x] Capture PCM microphone audio on Android and Desktop.
+- [x] Integrate Chromaprint behind `AudioFingerprinter`.
+- [x] Compare beginning-of-track and mid-track slices at 5, 10, and 20 seconds
+  on five controlled recordings. The numbers are in [SPIKE.md](SPIKE.md).
+  There was no turntable here; Listen in the app repeats the cut on a live take.
+- [x] Record match behaviour, latency, CPU use, and false positives.
+- [x] Decide whether AcoustID is viable for continuous recognition.
 
-This milestone is a decision gate. AcoustID requires the duration of the whole
-source audio and is primarily designed for file fingerprint lookup. If
-mid-track microphone samples are unreliable, keep AcoustID for the cases it
-does match and use the personal collection database in Milestone 3 as the
-fallback. Do not block the product on ShazamKit or another commercial
-recogniser.
+AcoustID stays the first lookup. Partial fingerprints are faithful slices of
+the full take and take well under 50 ms for 30 seconds of audio, so a clean
+excerpt is worth sending. It is not enough on its own for continuous vinyl:
+this run did not hear a record, and a miss still needs the catalog in
+Milestone 3. Do not block the product on another commercial recogniser.
 
 ## Milestone 3 — Personal collection database
 

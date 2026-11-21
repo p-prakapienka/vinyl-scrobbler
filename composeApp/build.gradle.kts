@@ -31,6 +31,7 @@ kotlin {
             implementation("org.jetbrains.compose.foundation:foundation:1.11.1")
             implementation("org.jetbrains.compose.material3:material3:1.11.0-alpha07")
             implementation("org.jetbrains.compose.runtime:runtime:1.11.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
             implementation("io.ktor:ktor-client-content-negotiation:3.5.2")
             implementation("io.ktor:ktor-client-core:3.5.2")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.2")
@@ -44,6 +45,7 @@ kotlin {
         }
 
         androidMain.dependencies {
+            implementation("androidx.activity:activity-compose:1.12.4")
             implementation("io.ktor:ktor-client-okhttp:3.5.2")
         }
 
@@ -61,7 +63,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Deb, TargetFormat.Dmg, TargetFormat.Msi)
             packageName = "Vinyl Scrobbler"
-            packageVersion = "0.1.3"
+            packageVersion = "0.2.0"
         }
     }
 }
