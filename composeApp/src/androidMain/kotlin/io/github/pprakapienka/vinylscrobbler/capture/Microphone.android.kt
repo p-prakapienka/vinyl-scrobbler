@@ -39,23 +39,42 @@ actual fun WithMicrophoneAccess(
 class AndroidMicrophone : Microphone {
     override suspend fun capture(durationSeconds: Int): PcmAudio = withContext(Dispatchers.IO) {
         require(durationSeconds > 0)
-        val rate = supportedRate()
-        val minBuffer = AudioRecord.getMinBufferSize(
-            rate,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT,
-        )
-        val recorder = AudioRecord(
+        var lastError: String? = null
+        for (rate in RATES) {
+            val minBuffer = AudioRecord.getMinBufferSize(
+                rate,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+            )
+            if (minBuffer <= 0) continue
+            val recorder = openRecorder(rate, minBuffer)
+            if (recorder == null) {
+                lastError = "Microphone rejected $rate Hz"
+                continue
+            }
+            if (recorder.state != AudioRecord.STATE_INITIALIZED) {
+                recorder.release()
+                lastError = "Microphone rejected $rate Hz"
+                continue
+            }
+            return@withContext record(recorder, rate, durationSeconds)
+        }
+        error(lastError ?: "No supported microphone sample rate")
+    }
+
+    private fun openRecorder(rate: Int, minBuffer: Int): AudioRecord? = try {
+        AudioRecord(
             MediaRecorder.AudioSource.MIC,
             rate,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
-            minBuffer.coerceAtLeast(rate),
+            bufferBytes(minBuffer, rate),
         )
-        if (recorder.state != AudioRecord.STATE_INITIALIZED) {
-            recorder.release()
-            error("Microphone is not available")
-        }
+    } catch (_: IllegalArgumentException) {
+        null
+    }
+
+    private fun record(recorder: AudioRecord, rate: Int, durationSeconds: Int): PcmAudio {
         val samples = ShortArray(rate * durationSeconds)
         recorder.startRecording()
         try {
@@ -69,19 +88,17 @@ class AndroidMicrophone : Microphone {
             recorder.stop()
             recorder.release()
         }
-        PcmAudio(samples, rate, 1)
+        return PcmAudio(samples, rate, 1)
     }
 
-    private fun supportedRate(): Int {
-        val rates = intArrayOf(11_025, 16_000, 22_050, 44_100, 48_000)
-        for (rate in rates) {
-            val min = AudioRecord.getMinBufferSize(
-                rate,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-            )
-            if (min > 0) return rate
+    private companion object {
+        val RATES = intArrayOf(11_025, 16_000, 22_050, 44_100, 48_000)
+        const val FRAME_BYTES = 2
+
+        fun bufferBytes(minBuffer: Int, rate: Int): Int {
+            val wanted = maxOf(minBuffer, rate * FRAME_BYTES)
+            val remainder = wanted % FRAME_BYTES
+            return if (remainder == 0) wanted else wanted + FRAME_BYTES - remainder
         }
-        error("No supported microphone sample rate")
     }
 }
