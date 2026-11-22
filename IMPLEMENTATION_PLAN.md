@@ -55,6 +55,9 @@ excerpt is worth sending. It is not enough on its own for continuous vinyl:
 this run did not hear a record, and a miss still needs the catalog in
 Milestone 3. Do not block the product on another commercial recogniser.
 
+The same call, set against the other public vinyl scrobblers, is in
+[COMPETITION.md](COMPETITION.md).
+
 ## Milestone 3 — Personal collection database
 
 The collection is small, so a private catalog of the records actually owned is
