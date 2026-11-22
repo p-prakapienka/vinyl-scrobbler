@@ -12,7 +12,8 @@ Milestone 2 is done. The app listens on the microphone and fingerprints with
 Chromaprint. An AcoustID key can be typed in for a lookup; it is not saved.
 The spike notes are in [SPIKE.md](SPIKE.md). How this compares with other
 vinyl scrobblers is in [COMPETITION.md](COMPETITION.md). Next is Milestone 3,
-the on-device catalog.
+the on-device catalog. Why Shazam survives a room recording is parked in
+[SHAZAM.md](SHAZAM.md) until after the MVP.
 
 Done so far:
 

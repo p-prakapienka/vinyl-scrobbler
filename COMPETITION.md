@@ -90,4 +90,5 @@ Shazam, and they do scrobble today. This app does not.
 Do not add a Pi, a web frontend, or another commercial recogniser to copy the
 projects that run. Discogs as a metadata source can wait; it does not change
 the product. The open risk is the microphone in the room, which Milestone 3
-is for.
+is for. Why that room still identifies on Shazam, and what of that is worth
+retrying after the MVP, is in [SHAZAM.md](SHAZAM.md).

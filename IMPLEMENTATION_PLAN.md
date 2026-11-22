@@ -56,7 +56,8 @@ this run did not hear a record, and a miss still needs the catalog in
 Milestone 3. Do not block the product on another commercial recogniser.
 
 The same call, set against the other public vinyl scrobblers, is in
-[COMPETITION.md](COMPETITION.md).
+[COMPETITION.md](COMPETITION.md). Why Shazam survives the room those listeners
+use is parked in [SHAZAM.md](SHAZAM.md).
 
 ## Milestone 3 — Personal collection database
 
@@ -105,3 +106,9 @@ reached.
 - [ ] Add an Android foreground service and persistent microphone indicator.
 - [ ] Add desktop tray controls and microphone selection.
 - [ ] Surface recognised track, confidence, elapsed time, and submission status.
+
+## Parked — after the MVP
+
+- [ ] [SHAZAM.md](SHAZAM.md). Landmark hashes survive a room recording;
+  Chromaprint often does not. Do not take a Shazam dependency. Revisit only
+  after the on-device catalog has been tried on a real record.
