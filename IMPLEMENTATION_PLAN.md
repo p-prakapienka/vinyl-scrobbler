@@ -7,7 +7,8 @@ Progress is tracked here. Done items are checked. There is no issue tracker.
 | Milestone 1 — Project foundation | Done |
 | Build pipeline | Done |
 | Milestone 2 — AcoustID recognition spike | Done |
-| Milestone 3 — Personal collection database | Next |
+| Milestone 3 — Personal collection database | Done |
+| Milestone 4 — Playback tracking | Next |
 
 ## Milestone 1 — Project foundation
 
@@ -65,18 +66,24 @@ The collection is small, so a private catalog of the records actually owned is
 an acceptable fallback when AcoustID misses, is low-confidence, or cannot be
 reached.
 
-- [ ] Store each owned track on device: artist, album, title, duration, and a
+- [x] Store each owned track on device: artist, album, title, duration, and a
   fingerprint (or a few fingerprints) taken from that copy.
-- [ ] Do not keep raw microphone audio. Fingerprints and metadata only.
-- [ ] Try AcoustID first. Search the local catalog only when AcoustID returns
+- [x] Do not keep raw microphone audio. Fingerprints and metadata only.
+- [x] Try AcoustID first. Search the local catalog only when AcoustID returns
   nothing useful. A simple comparison is enough; do not build a general music
   index.
-- [ ] Let a failed recognition become a catalog entry: the user confirms the
+- [x] Let a failed recognition become a catalog entry: the user confirms the
   metadata, the fingerprint is kept, and the next play can match locally.
-- [ ] Return local hits through the same recognition interface. Playback tracking
+- [x] Return local hits through the same recognition interface. Playback tracking
   must not care whether a candidate came from AcoustID or the catalog.
-- [ ] Test a hit, a miss, a low-confidence AcoustID result that falls through, and
+- [x] Test a hit, a miss, a low-confidence AcoustID result that falls through, and
   adding a track, against a fixture catalog.
+
+AcoustID stays first. A miss, a score below 0.5, or a lookup that cannot be
+reached searches the catalog. A saved listen stores the confirmed metadata and
+the Chromaprint fingerprint, not the audio. Up to eight fingerprints are kept
+per track. An item matches when at most two bits differ, and 90% of an overlap
+of at least eight items has to match. There is no general index.
 
 ## Milestone 4 — Playback tracking
 

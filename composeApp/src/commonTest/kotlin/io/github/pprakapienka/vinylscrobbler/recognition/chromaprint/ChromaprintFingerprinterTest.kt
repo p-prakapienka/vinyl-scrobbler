@@ -37,6 +37,17 @@ class ChromaprintFingerprinterTest {
         assertEquals(EXPECTED_TONE, fingerprint.encoded)
     }
 
+    @Test
+    fun `decodes a Chromaprint fingerprint back to the raw items`() {
+        assertTrue(ChromaprintEngine.decode("NwAAAkEA").contentEquals(intArrayOf(1, 0)))
+        val silence = ChromaprintEngine.decode("AQAAA0mUaEkSRZEGAA")
+        assertEquals(3, silence.size)
+        assertTrue(silence.all { it == 627964279 })
+        val raw = intArrayOf(0, 1, -1, 627964279, 1 shl 31, 0x00ff00ff, 42)
+        assertTrue(ChromaprintEngine.decode(ChromaprintEngine.encode(raw)).contentEquals(raw))
+        assertTrue(ChromaprintEngine.decode(EXPECTED_TONE).isNotEmpty())
+    }
+
     private companion object {
         const val EXPECTED_TONE = "AQAAS0mUaEmSTQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
     }

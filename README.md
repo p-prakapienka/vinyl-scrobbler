@@ -8,12 +8,12 @@ desktop platform. Compose Multiplatform shares the UI and application logic.
 
 ## Status
 
-Milestone 2 is done. The app listens on the microphone and fingerprints with
-Chromaprint. An AcoustID key can be typed in for a lookup; it is not saved.
-The spike notes are in [SPIKE.md](SPIKE.md). How this compares with other
-vinyl scrobblers is in [COMPETITION.md](COMPETITION.md). Next is Milestone 3,
-the on-device catalog. Why Shazam survives a room recording is parked in
-[SHAZAM.md](SHAZAM.md) until after the MVP.
+Milestone 3 is done. The app listens, asks AcoustID when a key is typed in,
+and falls back to an on-device catalog of fingerprints from the copies you
+own. A miss can be saved. The spike notes are in [SPIKE.md](SPIKE.md). How
+this compares with other vinyl scrobblers is in [COMPETITION.md](COMPETITION.md).
+Next is Milestone 4, playback tracking. Why Shazam survives a room recording
+is parked in [SHAZAM.md](SHAZAM.md) until after the MVP.
 
 Done so far:
 
@@ -22,6 +22,7 @@ Done so far:
 - AcoustID request and response mapping.
 - Provider-neutral recognition contracts.
 - The Last.fm listening eligibility policy, with tests.
+- An on-device catalog of owned tracks. Raw audio is not stored.
 - A sideloadable debug APK and a Windows MSI from GitHub Actions.
 
 ## Build

@@ -18,6 +18,9 @@ internal object ChromaprintEngine {
     private const val BANDS = 12
     private const val MIN_FREQ = 28
     private const val MAX_FREQ = 3520
+    private const val NORMAL_BITS = 3
+    private const val EXCEPTIONAL_BITS = 5
+    private const val NORMAL_ESCAPE = 7
     private val FILTER = doubleArrayOf(0.25, 0.75, 1.0, 0.75, 0.25)
     private val GRAY = intArrayOf(0, 1, 3, 2)
 
@@ -102,6 +105,60 @@ internal object ChromaprintEngine {
         cursor = packBits(normal, 3, bytes, cursor)
         packBits(exceptional, 5, bytes, cursor)
         return base64(bytes)
+    }
+
+    fun decode(encoded: String): IntArray {
+        val bytes = decodeBase64(encoded)
+        require(bytes.size >= 4) { "Truncated fingerprint" }
+        val size = ((bytes[1].toInt() and 255) shl 16) or
+            ((bytes[2].toInt() and 255) shl 8) or
+            (bytes[3].toInt() and 255)
+        if (size == 0) return IntArray(0)
+        require(bytes.size > 4) { "Truncated fingerprint" }
+        val packedNormals = unpackBits(bytes, 4, (bytes.size - 4) * 8 / NORMAL_BITS, NORMAL_BITS)
+        var terminators = 0
+        var exceptionalCount = 0
+        var used = 0
+        for (index in packedNormals.indices) {
+            used = index + 1
+            when (packedNormals[index]) {
+                0 -> terminators++
+                NORMAL_ESCAPE -> exceptionalCount++
+            }
+            if (terminators == size) break
+        }
+        require(terminators == size) { "Truncated fingerprint" }
+        val exceptionalOffset = 4 + packedSize(used, NORMAL_BITS)
+        val exceptional = if (exceptionalCount == 0) {
+            IntArray(0)
+        } else {
+            require(bytes.size >= exceptionalOffset + packedSize(exceptionalCount, EXCEPTIONAL_BITS)) {
+                "Truncated fingerprint"
+            }
+            unpackBits(bytes, exceptionalOffset, exceptionalCount, EXCEPTIONAL_BITS)
+        }
+        var exceptionalIndex = 0
+        val raw = IntArray(size)
+        var value = 0
+        var lastBit = 0
+        var rawIndex = 0
+        for (index in 0 until used) {
+            val gap = if (packedNormals[index] == NORMAL_ESCAPE) {
+                packedNormals[index] + exceptional[exceptionalIndex++]
+            } else {
+                packedNormals[index]
+            }
+            if (gap == 0) {
+                raw[rawIndex++] = value
+                lastBit = 0
+            } else {
+                lastBit += gap
+                require(lastBit in 1..32) { "Invalid fingerprint" }
+                value = value xor (1 shl (lastBit - 1))
+            }
+        }
+        require(rawIndex == size) { "Invalid fingerprint" }
+        return raw
     }
 
     private fun subfingerprint(image: RollingIntegralImage, offset: Int): Int {
@@ -194,6 +251,48 @@ internal object ChromaprintEngine {
             dest[cursor++] = (accumulator and 255).toByte()
         }
         return cursor
+    }
+
+    private fun unpackBits(bytes: ByteArray, offset: Int, count: Int, bits: Int): IntArray {
+        if (count == 0) return IntArray(0)
+        val out = IntArray(count)
+        var cursor = offset
+        var accumulator = 0
+        var filled = 0
+        val mask = (1 shl bits) - 1
+        for (index in 0 until count) {
+            while (filled < bits) {
+                require(cursor < bytes.size) { "Truncated fingerprint" }
+                accumulator = accumulator or ((bytes[cursor].toInt() and 255) shl filled)
+                cursor++
+                filled += 8
+            }
+            out[index] = accumulator and mask
+            accumulator = accumulator ushr bits
+            filled -= bits
+        }
+        return out
+    }
+
+    private fun decodeBase64(text: String): ByteArray {
+        val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+        val values = IntArray(128) { -1 }
+        alphabet.forEachIndexed { index, symbol -> values[symbol.code] = index }
+        val out = ArrayList<Byte>(text.length * 3 / 4)
+        var accumulator = 0
+        var filled = 0
+        for (symbol in text) {
+            require(symbol.code < 128) { "Invalid fingerprint" }
+            val value = values[symbol.code]
+            require(value >= 0) { "Invalid fingerprint" }
+            accumulator = (accumulator shl 6) or value
+            filled += 6
+            if (filled >= 8) {
+                filled -= 8
+                out += ((accumulator shr filled) and 255).toByte()
+            }
+        }
+        return out.toByteArray()
     }
 
     private fun base64(bytes: ByteArray): String {

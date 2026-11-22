@@ -13,7 +13,7 @@ android {
         targetSdk = 36
         // CI passes -Pvinyl.versionCode so each build can replace the previous one.
         versionCode = (findProperty("vinyl.versionCode") as String?)?.toIntOrNull() ?: 1
-        versionName = "0.2.2"
+        versionName = "0.3.0"
     }
 
     signingConfigs {
